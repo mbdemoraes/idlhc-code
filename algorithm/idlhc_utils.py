@@ -94,11 +94,11 @@ class IDLHC_UTILS:
         features = []
         for i in range(self.problem.num_of_variables):
             prob = population.probs[i]
-            new_feature = self.gera_amostragem_variaveis(prob, self.problem.variables, self.problem.num_of_individuals)
+            new_feature = self.generate_samples(prob, self.problem.variables, self.problem.num_of_individuals)
             features.append(new_feature)
 
         features = np.array(features).T
-        features = self._checa_duplicidade(features)
+        features = self.check_duplicity(features)
 
         for i in range(len(features)):
             individual = Individual(direction=self.problem.direction)
@@ -107,7 +107,7 @@ class IDLHC_UTILS:
             new_population.append(individual)
         return new_population
 
-    def _checa_duplicidade(self, sampled: np.array) -> np.array:
+    def check_duplicity(self, sampled: np.array) -> np.array:
         """
         Chega duplicidade nos sorteios e retona solucoes sem repeticao
         :param sampled: vetor com as variaveis amostradas para cada amostra
@@ -117,7 +117,7 @@ class IDLHC_UTILS:
         return sampled_clean
 
     # Função que utiliza as probabilidades e cria indivíduos com base nessa probabilidade
-    def gera_amostragem_variaveis(self, probs: list, values: list, samples: int) -> list:
+    def generate_samples(self, probs: list, values: list, samples: int) -> list:
         """
         gera amostragem para uma variavel
         :param probs: probabilidade dos niveis das variaveis

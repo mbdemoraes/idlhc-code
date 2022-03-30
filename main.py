@@ -10,7 +10,7 @@ def f1(individual):
 generations = 50 # quantidade de gerações (ou iterações)
 num_of_individuals = 100 # controla quantos indivíduos existem na população
 num_of_variables = 100 # controla o tamanho do vetor de decisão
-direction = "MIN" # se o problema é de maximização (MAX) ou de minimização (MIN)
+direction = "MAX" # se o problema é de maximização (MAX) ou de minimização (MIN)
 num_pdf = 10 # quantos indivíduos são considerados para a construção da função de distribuição de probabilidade
 num_cut_pdf = 0.2 # porcentagem utilizada para cortar opções
 

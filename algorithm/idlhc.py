@@ -1,7 +1,5 @@
 from algorithm.idlhc_utils import IDLHC_UTILS
 import copy
-import itertools
-import numpy as np
 import matplotlib.pyplot as plt
 
 class IDLHC:
@@ -13,37 +11,53 @@ class IDLHC:
         self.convergence_array = []
 
     def plot_convergence(self):
+        # cria a figura
         plt.style.use('seaborn-white')
         fig, ax = plt.subplots(figsize=(6, 4), dpi=100)
 
+        # define o eixo x
         x_axis = [i for i in range(self.problem.num_of_generations)]
+
+        # define o eixo y
         y_axis = self.convergence_array
 
+        # formata o tamanho da fonte nos eixos
         plt.xticks(fontsize=16)
         plt.yticks(fontsize=16)
         plt.ylabel("Valor da função objetivo", fontsize=16)
         plt.xlabel("Gerações", fontsize=16)
 
+        # plota o gráfico
         plt.plot(x_axis,y_axis, marker='o', color='blue', linestyle='None')
         plt.show()
 
     def do(self):
+        # Cria população inicial
         self.population = self.problem.create_initial_population()
 
         for i in range(self.problem.num_of_generations):
             print("Generation: " + str(i))
-            #print("Generating variable counts...")
+
+            # Conta as ocorrências das variáveis
             self.idlhc_utils.variable_count(self.population)
-            #print("Updating probabilities...")
+            # Atualiza o vetor de probabilidades
             self.idlhc_utils.update_probabilities(self.population)
-            #print("Adjusting probabilities based on parameter cut...")
+            # Ajusta as probabilidades baseado no valor de corte
             self.idlhc_utils.adjust_cut_pdf(self.population)
-            #print("Generate new population based on probabilities...")
+            # Cria nova população
             new_population = copy.deepcopy(self.idlhc_utils.generate_new_population(self.population))
             self.population = new_population
-            self.population.population.sort(key=lambda individual: individual.objective, reverse=True)
+            # Ordena a nova população
+            if self.problem.direction == "MAX":
+                # ordena a população de modo decrescente
+                self.population.population.sort(key=lambda individual: individual.objective, reverse=True)
+            else:
+                # ordena a população de modo crescente
+                self.population.population.sort(key=lambda individual: individual.objective)
 
+            # Adiciona no vetor de convergência o melhor indivíduo encontrado até o momento
             self.convergence_array.append(self.population.population[0].objective)
 
+        # Plota o gráfico de convergência
         self.plot_convergence()
-        #print(self.population.population[0].objective)
+
