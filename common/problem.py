@@ -26,6 +26,7 @@ class Problem:
         self.mutation = mutation
 
 
+    # Define quais possíveis variáveis do problema
     def set_variables(self):
         variables = [i for i in range(min(self.variables_range), max(self.variables_range) + 1)]
         return variables
@@ -43,12 +44,14 @@ class Problem:
         return population
 
 
+    # Gera um indivíduo
     def generate_individual(self):
         individual = Individual(self.direction)
         individual.features = [random.randint(min(self.variables_range), max(self.variables_range)) for x in range(self.num_of_variables)]
         return individual
 
 
+    # Calcula o valor da função objetivo
     def calculate_objectives(self, individual):
         individual.objective = [f(individual.features) for f in self.objective]
         individual.objective = individual.objective[0]

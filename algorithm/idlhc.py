@@ -2,6 +2,8 @@ from algorithm.idlhc_utils import IDLHC_UTILS
 import copy
 import matplotlib.pyplot as plt
 
+# IDLHC = Iteractive Discrete Latin Hypercube
+
 class IDLHC:
 
     def __init__(self, problem, num_pdf, num_cut_pdf):
