@@ -34,7 +34,7 @@ class IDLHC_UTILS:
         # Seleciona os NUM_PDF melhores indivíduos e adiciona
         # seus vetores de decisão em uma lista
         for i in range(len(population.population)):
-            if i <= self.num_pdf:
+            if i < self.num_pdf:
                 best_features.append(population.population[i].features)
             else:
                 break

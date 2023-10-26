@@ -12,8 +12,8 @@ num_of_variables = 100 # controla o tamanho do vetor de decisão
 direction = "MAX" # se o problema é de maximização (MAX) ou de minimização (MIN)
 
 # Parâmetros do IDLHC
-num_pdf = 50 # quantos indivíduos são considerados para a construção da função de distribuição de probabilidade
-num_cut_pdf = 0.5 # porcentagem utilizada para cortar opções
+num_pdf = 20 # quantos indivíduos são considerados para a construção da função de distribuição de probabilidade
+num_cut_pdf = 0.1 # porcentagem utilizada para cortar opções
 
 # define a classe de problema
 problem = Problem(num_of_variables=num_of_variables,
