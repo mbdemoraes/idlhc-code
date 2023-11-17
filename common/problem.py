@@ -9,6 +9,7 @@ class Problem:
 
     def __init__(self,
                  objective,
+                 repair,
                  num_of_variables,
                  variables_range,
                  num_of_individuals,
@@ -22,6 +23,7 @@ class Problem:
         self.num_of_variables = num_of_variables
         self.num_of_individuals = num_of_individuals
         self.objective = objective
+        self.repair = repair
         self.expand = expand
         self.variables_range = variables_range
         self.direction = direction
@@ -37,7 +39,6 @@ class Problem:
     def set_variables(self):
         variables = [i for i in range(min(self.variables_range), max(self.variables_range) + 1)]
         return variables
-
 
     # Cria a população inicial de modo aleatório
     def create_initial_population(self):
@@ -89,6 +90,8 @@ class Problem:
     def calculate_objectives(self, individual):
         individual.objective = [f(individual.features, self.objective_vars) for f in self.objective]
         individual.objective = individual.objective[0]
+        self.repair_objective(individual)
 
     def repair_objective(self, individual):
-        pass
+        temp = [f(individual,self.objective_vars) for f in self.repair]
+        individual = temp[0] 
