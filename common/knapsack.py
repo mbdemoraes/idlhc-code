@@ -6,4 +6,3 @@ class Knapsack(object):
         self.weights = weights 
         self.ratios = ratios
         self.sorted_ratio_indexes = sorted_ratio_indexes
-        self.total_weight = total_weight

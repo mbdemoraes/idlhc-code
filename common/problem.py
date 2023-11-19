@@ -54,6 +54,8 @@ class Problem:
 
     # Gera um indivíduo
     def generate_individual(self):
+        salt = random.random() * (10 ** -6)
+        # print(salt)
         if self.initial_population_type == 0:
             def simpe_generation(self):
                 individual = Individual(self.direction)
@@ -65,7 +67,7 @@ class Problem:
             def logistic_map_generation(self):
                 individual = Individual(self.direction)
                 individual.features = [0.254561 if self.current_value == None else self.current_value]
-                r = 3.999999301
+                r = 3.999999301 + salt
                 for n in range(self.num_of_variables-1):
                     individual.features.append( r*individual.features[n]*(1-individual.features[n]) )
                 self.current_value = individual.features[-1]
@@ -77,7 +79,7 @@ class Problem:
             def cosin_map_generation(self):
                 individual = Individual(self.direction)
                 individual.features = [0.1 if self.current_value == None else self.current_value]
-                r = 6
+                r = 6 + salt
                 for n in range(self.num_of_variables-1):
                     individual.features.append( cos(r*individual.features[n]) )
                 self.current_value = individual.features[-1]
@@ -88,7 +90,7 @@ class Problem:
 
     # Calcula o valor da função objetivo
     def calculate_objectives(self, individual):
-        individual.objective = [f(individual.features, self.objective_vars) for f in self.objective]
+        individual.objective = [f(individual, self.objective_vars) for f in self.objective]
         individual.objective = individual.objective[0]
         self.repair_objective(individual)
 
