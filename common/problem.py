@@ -1,8 +1,6 @@
 from common.individual import Individual
 import random
-import numpy as np
 from common.population import Population
-import copy
 from math import cos
 
 class Problem:
