@@ -38,7 +38,7 @@ class IDLHC_UTILS:
                 best_features.append(population.population[i].features)
             else:
                 break
-
+        
         # Busca a lista com os melhores vetores de decisão
         # e conta quantas vezes cada possível variável apareceu nesses vetores
         for best in best_features:

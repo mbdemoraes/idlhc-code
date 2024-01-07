@@ -5,6 +5,7 @@ class Population:
         self.last_id = 0
         self.var_count = []
         self.probs = []
+        self.global_best = 0
 
     # Função que adiciona um conjunto de indivíduos à população
     def extend(self, new_individuals):

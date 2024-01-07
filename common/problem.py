@@ -29,7 +29,6 @@ class Problem:
         self.variables = self.set_variables()
         self.mutation = mutation
         self.initial_population_type = initial_population_type
-        self.objective_vars = objective_vars
 
         self.current_value = None
 
@@ -88,10 +87,10 @@ class Problem:
 
     # Calcula o valor da função objetivo
     def calculate_objectives(self, individual):
-        individual.objective = [f(individual, self.objective_vars) for f in self.objective]
+        individual.objective = [f(individual) for f in self.objective]
         individual.objective = individual.objective[0]
         self.repair_objective(individual)
 
     def repair_objective(self, individual):
-        temp = [f(individual,self.objective_vars) for f in self.repair]
+        temp = [f(individual) for f in self.repair]
         individual = temp[0] 
