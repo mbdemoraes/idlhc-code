@@ -13,14 +13,16 @@ direction = "MAX"
 num_pdf = 20
 num_cut_pdf = 0.1
 
-capacity = 2000
-values = [random.randint(1, 100) for i in range(num_of_variables)]
-weights = [random.randint(1, 100) for i in range(num_of_variables)]
-ratios = [values[i] / weights[i] for i in range(num_of_variables)]
+knapsack_tests_data = pd.read_csv('test_data/knapsack_problems.csv')
+knapsack_tests_data = knapsack_tests_data.astype("object")
 
-sorted_ratio_indexes = sorted(range(len(values)), key=lambda i: values[i])
+data_row = knapsack_tests_data.iloc[0]
+capacity = int(data_row["capacity"])
+values = [int(i) for i in data_row["values"][1:-2].split(",")]
+weights = [int(i) for i in data_row["weights"][1:-2].split(",")]
+sorted_ratio_indexes = [int(i) for i in data_row["sorted_ratio_indexes"][1:-2].split(",")]
 
-knapsack = Knapsack(capacity, values, weights, sorted_ratio_indexes)
+knapsack = Knapsack(capacity,values,weights,sorted_ratio_indexes)
 
 problem = Problem(
     num_of_variables=num_of_variables,
@@ -31,65 +33,62 @@ problem = Problem(
     mutation=(1 / num_of_variables),
     variables_range=[0, 1],
     direction=direction,
-    initial_population_type=2,
+    initial_population_type=1,
 )
-
 iteration = IDLHC(problem, num_pdf=num_pdf, num_cut_pdf=num_cut_pdf)
 iteration.do()
 
-num_iterations = 1
+#first_gens = []
+#best_values = []
+#population_gen_type = problem.initial_population_type
+#problem_type = "knapsack"
+#convergences = []
 
-first_gens = []
-best_values = []
-population_gen_type = problem.initial_population_type
-problem_type = "knapsack"
-convergences = []
+#for i in range(num_iterations):
+    #iteration = IDLHC(problem, num_pdf=num_pdf, num_cut_pdf=num_cut_pdf)
+    #iteration.do()
+    #best_value = max(iteration.convergence_array)
+    #best_values.append(best_value)
+    #convergences.append(iteration.convergence_array)
 
-for i in range(num_iterations):
-    iteration = IDLHC(problem, num_pdf=num_pdf, num_cut_pdf=num_cut_pdf)
-    iteration.do()
-    best_value = max(iteration.convergence_array)
-    best_values.append(best_value)
-    convergences.append(iteration.convergence_array)
+    #for n in range(len(iteration.convergence_array)):
+        #if iteration.convergence_array[n] == best_values[i]:
+            #first_gens.append(n)
+            #break
 
-    for n in range(len(iteration.convergence_array)):
-        if iteration.convergence_array[n] == best_values[i]:
-            first_gens.append(n)
-            break
+#df2 = pd.DataFrame(
+    #{
+        #"best_value": best_values,
+        #"firstgen_with_best_value": first_gens,
+        #"population_gen_type": population_gen_type,
+        #"problem_type": problem_type,
+        #"convergence_array": "",
+    #}
+#)
 
-df2 = pd.DataFrame(
-    {
-        "best_value": best_values,
-        "firstgen_with_best_value": first_gens,
-        "population_gen_type": population_gen_type,
-        "problem_type": problem_type,
-        "convergence_array": "",
-    }
-)
+#for i in range(len(best_values)):
+    #df2.at[i, "convergence_array"] = convergences[i]
 
-for i in range(len(best_values)):
-    df2.at[i, "convergence_array"] = convergences[i]
+#filepath = Path("metrics/knapsack.csv")
 
-filepath = Path("metrics/knapsack.csv")
+#filepath.parent.mkdir(parents=True, exist_ok=True)
 
-filepath.parent.mkdir(parents=True, exist_ok=True)
-
-df2.to_csv(filepath, mode="a", index=False, header=False)
+#df2.to_csv(filepath, mode="a", index=False, header=False)
 
 
-final_dict = {}
-num_of_problems = 100
-capacity = 2000
+#final_dict = {}
+#num_of_problems = 100
+#capacity = 2000
 
 
-def gen_problem_vars():
-    values = [random.randint(1, 100) for i in range(num_of_variables)]
-    weights = [random.randint(1, 100) for i in range(num_of_variables)]
+#def gen_problem_vars():
+    #values = [random.randint(1, 100) for i in range(num_of_variables)]
+    #weights = [random.randint(1, 100) for i in range(num_of_variables)]
 
-    ratios = [values[i] / weights[i] for i in range(num_of_variables)]
+    #ratios = [values[i] / weights[i] for i in range(num_of_variables)]
 
-    sorted_ratio_indexes = sorted(range(len(values)), key=lambda i: ratios[i])
-    return values, weights, ratios, sorted_ratio_indexes
+    #sorted_ratio_indexes = sorted(range(len(values)), key=lambda i: ratios[i])
+    #return values, weights, ratios, sorted_ratio_indexes
 
 
 #zero_list = ["" for i in range(num_of_problems)]

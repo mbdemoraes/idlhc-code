@@ -51,7 +51,7 @@ class Problem:
 
     # Gera um indivíduo
     def generate_individual(self):
-        salt = random.random() * (10 ** -6)
+        salt = random.random() * (10 ** -10)
         # print(salt)
         if self.initial_population_type == 0:
             def simpe_generation(self):
