@@ -6,7 +6,14 @@ import pandas as pd
 from pathlib import Path
 
 
-def run_test_cases():
+def gen_test_cases(
+    generations=100,
+    num_of_individuals=100,
+    num_of_variables=100,
+    direction="MAX",
+    num_pdf=20,
+    num_cut_pdf=0.1,
+):
     knapsack_tests_data = pd.read_csv("test_data/knapsack_problems.csv")
     for data_row in knapsack_tests_data.iloc:
         data_row = knapsack_tests_data.iloc[0]
@@ -18,11 +25,6 @@ def run_test_cases():
         ]
 
         knapsack = Knapsack(capacity, values, weights, sorted_ratio_indexes)
-
-        generations = 100
-        num_of_individuals = 100
-        num_of_variables = 100
-        direction = "MAX"
 
         problem = Problem(
             num_of_variables=num_of_variables,
@@ -36,31 +38,24 @@ def run_test_cases():
             initial_population_type=2,
         )
 
-        num_pdf = 20
-        num_cut_pdf = 0.1
-
         iteration = IDLHC(problem, num_pdf=num_pdf, num_cut_pdf=num_cut_pdf)
         iteration.do()
 
+def capture_test_data(iteration : IDLHC, problem: Problem):
+    first_gens = []
+    best_values = []
+    population_gen_type = problem.initial_population_type
+    problem_type = "knapsack"
+    convergences = []
 
-run_test_cases()
-# first_gens = []
-# best_values = []
-# population_gen_type = problem.initial_population_type
-# problem_type = "knapsack"
-# convergences = []
+    best_value = max(iteration.convergence_array)
+    best_values.append(best_value)
+    convergences.append(iteration.convergence_array)
 
-# for i in range(num_iterations):
-# iteration = IDLHC(problem, num_pdf=num_pdf, num_cut_pdf=num_cut_pdf)
-# iteration.do()
-# best_value = max(iteration.convergence_array)
-# best_values.append(best_value)
-# convergences.append(iteration.convergence_array)
-
-# for n in range(len(iteration.convergence_array)):
-# if iteration.convergence_array[n] == best_values[i]:
-# first_gens.append(n)
-# break
+    for n in range(len(iteration.convergence_array)):
+        if iteration.convergence_array[n] == best_values[i]:
+            first_gens.append(n)
+            break
 
 # df2 = pd.DataFrame(
 # {
