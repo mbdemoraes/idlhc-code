@@ -13,10 +13,10 @@ def gen_test_cases(
     direction="MAX",
     num_pdf=20,
     num_cut_pdf=0.1,
+    initial_population_type = 0
 ):
     knapsack_tests_data = pd.read_csv("test_data/knapsack.csv")
-#    test = knapsack_tests_data.iloc
-#    print(test[1])
+    
     for count,data_row in enumerate(knapsack_tests_data.iloc):
         #data_row = knapsack_tests_data.iloc[0]
         capacity = int(data_row["capacity"])
@@ -37,9 +37,10 @@ def gen_test_cases(
             mutation=(1 / num_of_variables),
             variables_range=[0, 1],
             direction=direction,
-            initial_population_type=2,
+            initial_population_type=initial_population_type,
         )
 
+        print("test num:", count)
         iteration = IDLHC(problem, num_pdf=num_pdf, num_cut_pdf=num_cut_pdf)
         iteration.do()
         capture_test_data(iteration,problem, count)
@@ -75,8 +76,10 @@ def capture_test_data(iteration : IDLHC, problem: Problem, problem_number : int)
 
     row_df.to_csv(filepath, mode="a", index=False, header=False)
 
-
-gen_test_cases()
+for i in range(5):
+    gen_test_cases(initial_population_type=0)
+    gen_test_cases(initial_population_type=1)
+    gen_test_cases(initial_population_type=2)
 
 # for i in range(len(best_values)):
 # df2.at[i, "convergence_array"] = convergences[i]

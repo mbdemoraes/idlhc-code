@@ -38,7 +38,7 @@ class IDLHC:
         self.population = self.problem.create_initial_population()
 
         for i in range(self.problem.num_of_generations):
-            print("Generation: " + str(i))
+            #print("Generation: " + str(i))
 
             # Conta as ocorrências das variáveis
             self.idlhc_utils.variable_count(self.population)
@@ -61,5 +61,5 @@ class IDLHC:
             self.convergence_array.append(self.population.population[0].objective)
 
         # Plota o gráfico de convergência
-        self.plot_convergence()
+        #self.plot_convergence()
 
