@@ -31,7 +31,8 @@ class Problem:
         self.initial_population_type = initial_population_type
 
         self.current_value = None
-
+        self.current_salt = random.random() * (10 ** -10)
+        
     # Define quais possíveis variáveis do problema
     def set_variables(self):
         variables = [i for i in range(min(self.variables_range), max(self.variables_range) + 1)]
@@ -51,8 +52,9 @@ class Problem:
 
     # Gera um indivíduo
     def generate_individual(self):
-        salt = random.random() * (10 ** -10)
+        #salt = random.random() * (10 ** -10)
         # print(salt)
+        salt = self.current_salt
         if self.initial_population_type == 0:
             def simpe_generation(self):
                 individual = Individual(self.direction)

@@ -4,16 +4,17 @@ from bench_algorithms import Knapsack
 import random
 import pandas as pd
 from pathlib import Path
-
+import threading
+#import concurrent.futures
 
 def gen_test_cases(
+    initial_population_type = 0,
     generations=100,
     num_of_individuals=100,
     num_of_variables=100,
     direction="MAX",
     num_pdf=20,
     num_cut_pdf=0.1,
-    initial_population_type = 0
 ):
     knapsack_tests_data = pd.read_csv("test_data/knapsack.csv")
     
@@ -40,7 +41,7 @@ def gen_test_cases(
             initial_population_type=initial_population_type,
         )
 
-        print("test num:", count)
+        print(threading.current_thread().name, "Test Num: ", count)
         iteration = IDLHC(problem, num_pdf=num_pdf, num_cut_pdf=num_cut_pdf)
         iteration.do()
         capture_test_data(iteration,problem, count)
@@ -70,13 +71,23 @@ def capture_test_data(iteration : IDLHC, problem: Problem, problem_number : int)
     row_df = pd.DataFrame([problem_row])
     row_df.at[0, "convergence_array"] = convergence_array
 
-    filepath = Path("algorithm_metrics/knapsack_problem.csv")
+    filepath = Path("algorithm_metrics/knapsack_problem_p.csv")
 
     filepath.parent.mkdir(parents=True, exist_ok=True)
-
-    row_df.to_csv(filepath, mode="a", index=False, header=False)
+    
+    csv_output_lock = threading.Lock()
+    with csv_output_lock:
+        row_df.to_csv(filepath, mode="a", index=False, header=False)
 
 for i in range(5):
-    gen_test_cases(initial_population_type=0)
-    gen_test_cases(initial_population_type=1)
-    gen_test_cases(initial_population_type=2)
+    t1 = threading.Thread(target=gen_test_cases, args=(0,) )
+    t2 = threading.Thread(target=gen_test_cases, args=(1,) )
+    t3 = threading.Thread(target=gen_test_cases, args=(2,) )
+    t1.start()
+    t2.start()
+    t3.start()
+    t1.join()
+    t2.join()
+    t3.join()
+
+print("done")
