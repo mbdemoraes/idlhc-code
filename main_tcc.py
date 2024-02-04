@@ -16,7 +16,7 @@ def gen_test_cases(
     num_pdf=20,
     num_cut_pdf=0.1,
 ):
-    knapsack_tests_data = pd.read_csv("test_data/knapsack.csv")
+    knapsack_tests_data = pd.read_csv("test_data/knapsack_new.csv")
     
     for count,data_row in enumerate(knapsack_tests_data.iloc):
         #data_row = knapsack_tests_data.iloc[0]
@@ -71,7 +71,7 @@ def capture_test_data(iteration : IDLHC, problem: Problem, problem_number : int)
     row_df = pd.DataFrame([problem_row])
     row_df.at[0, "convergence_array"] = convergence_array
 
-    filepath = Path("algorithm_metrics/knapsack_problem_p.csv")
+    filepath = Path("algorithm_metrics/knapsack_problem_updated.csv")
 
     filepath.parent.mkdir(parents=True, exist_ok=True)
     

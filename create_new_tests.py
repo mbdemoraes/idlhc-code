@@ -13,15 +13,25 @@ def gen_problem_vars(num_of_variables=100, value_range=(1, 100), weight_range=(1
     return (values, weights, ratios, sorted_ratio_indexes)
 
 
-def save_knapsack_instances():
+def save_knapsack_instances(num_of_steps):
     step_size = 100
-    num_of_problems = 10
-    for i in range(num_of_problems):
+    initial_size = 100
+    for i in range(num_of_steps):
+        current_size = (initial_size + (i * step_size))
+
+
+        min_item_value = 1
+        max_item_value = int(math.ceil(1.6 * initial_size))
+        min_weight_value = 1
+        max_weight_value = int(math.ceil(1.6 * initial_size))
+        num_of_variables = current_size
+       
         test_values = gen_problem_vars(
-            num_of_variables=100 + (i * step_size),
-            value_range=(1, math.ceil(1.6 * (100 + (i * step_size)))),
-            weight_range=(1, math.ceil(1.4 * (100 + (i * step_size)))),
+            num_of_variables,
+            value_range=(min_item_value, max_item_value),
+            weight_range=(min_weight_value,max_weight_value),
         )
+        
         values, weights, ratios, sorted_ratio_indexes = test_values
 
         problem_row = {
@@ -29,7 +39,7 @@ def save_knapsack_instances():
             "weights": "",
             "ratios": "",
             "sorted_ratio_indexes": "",
-            "capacity": int((100 + (i * step_size)) * 20 )
+            "capacity": int((0.5 * max_weight_value) * current_size)
         }
 
         row_df = pd.DataFrame([problem_row])
@@ -44,4 +54,4 @@ def save_knapsack_instances():
         row_df.to_csv(filepath, mode="a", index=False, header=False)
 
 
-save_knapsack_instances()
+save_knapsack_instances(num_of_steps=10)
