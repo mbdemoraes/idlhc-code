@@ -1,9 +1,21 @@
+import math
+
 class Knapsack:
-    def __init__(self, capacity, values, weights, sorted_ratio_indexes):
-        self.capacity = capacity
+    minimum_size = 100
+    min_item_value = 1
+    max_item_value = int(math.ceil(1.6 * minimum_size))
+    min_weight_value = 1
+    max_weight_value = int(math.ceil(1.6 * minimum_size))
+
+    def __init__(self, values, weights):
         self.values = values
         self.weights = weights
-        self.sorted_ratio_indexes = sorted_ratio_indexes
+        self.capacity = int((0.5 * self.max_weight_value) * len(self.values))
+
+    def get_sorted_ratio_indexes(self):
+        ratios = [self.values[i] / self.weights[i] for i in range(len(self.values))]
+        sorted_ratio_indexes = sorted(range(len(self.values)), key=lambda i: ratios[i])
+        return sorted_ratio_indexes
 
     def bench(self, individual):
         if len(individual.features) != len(self.values) or len(
@@ -28,7 +40,8 @@ class Knapsack:
             return individual
         for i in range(len(self.values)):
             if individual.total_weight > self.capacity:
-                index = self.sorted_ratio_indexes[i]
+                sorted_ratio_indexes = self.get_sorted_ratio_indexes()
+                index = sorted_ratio_indexes[i]
                 if individual.features[index] == 1:
                     individual.features[index] = 0
                     individual.total_weight -= self.weights[index]

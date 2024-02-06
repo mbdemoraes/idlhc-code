@@ -11,24 +11,22 @@ def gen_test_cases(
     initial_population_type = 0,
     generations=100,
     num_of_individuals=100,
-    num_of_variables=100,
     direction="MAX",
     num_pdf=20,
     num_cut_pdf=0.1,
 ):
-    knapsack_tests_data = pd.read_csv("test_data/knapsack_new.csv")
+    knapsack_tests_data = pd.read_csv("test_data/knapsack_new.csv",header=[0,1])
+    total_knapsack_instances = list(knapsack_tests_data)[-1][1]
     
-    for count,data_row in enumerate(knapsack_tests_data.iloc):
-        #data_row = knapsack_tests_data.iloc[0]
-        capacity = int(data_row["capacity"])
-        values = [int(i) for i in data_row["values"].replace("[","").replace("]", "").split(",")]
-        weights = [int(i) for i in data_row["weights"].replace("[","").replace("]", "").split(",")]
-        sorted_ratio_indexes = [
-            int(i) for i in data_row["sorted_ratio_indexes"].replace("[","").replace("]", "").split(",")
-        ]
+    #for current_instance in range(int(total_knapsack_instances)+1):      
+    kkkk = [9]
+    for current_instance in kkkk:      
+        values = list(knapsack_tests_data["values"][str(current_instance)].dropna())
+        weights = list(knapsack_tests_data["weights"][str(current_instance)].dropna())
+        
+        knapsack = Knapsack(values, weights)
 
-        knapsack = Knapsack(capacity, values, weights, sorted_ratio_indexes)
-
+        num_of_variables = len(values)
         problem = Problem(
             num_of_variables=num_of_variables,
             num_of_individuals=num_of_individuals,
@@ -41,10 +39,10 @@ def gen_test_cases(
             initial_population_type=initial_population_type,
         )
 
-        print(threading.current_thread().name, "Test Num: ", count)
+        print(threading.current_thread().name, "Test Num: ", current_instance)
         iteration = IDLHC(problem, num_pdf=num_pdf, num_cut_pdf=num_cut_pdf)
         iteration.do()
-        capture_test_data(iteration,problem, count)
+        capture_test_data(iteration,problem, current_instance)
         
 def capture_test_data(iteration : IDLHC, problem: Problem, problem_number : int):
     best_value = max(iteration.convergence_array)
