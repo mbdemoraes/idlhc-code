@@ -11,6 +11,7 @@ class IDLHC:
         self.problem = problem
         self.population = None
         self.convergence_array = []
+        self.best_individuals = []
 
     def plot_convergence(self):
         # cria a figura
@@ -59,6 +60,7 @@ class IDLHC:
 
             # Adiciona no vetor de convergência o melhor indivíduo encontrado até o momento
             self.convergence_array.append(self.population.population[0].objective)
+            self.best_individuals.append(self.population.population[0])
 
         # Plota o gráfico de convergência
         #self.plot_convergence()
