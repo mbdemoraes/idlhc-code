@@ -20,24 +20,25 @@ def save_knapsack_instances(num_of_steps):
     for i in range(num_of_steps):
         current_size = initial_size + (i * step_size)
 
-        test_values = gen_problem_vars(
+        instance_values = gen_problem_vars(
             current_size,
             value_range=(Knapsack.min_item_value, Knapsack.max_item_value),
-            weight_range=(min_weight_value, max_weight_value),
+            weight_range=(Knapsack.min_weight_value, Knapsack.max_weight_value),
         )
 
-        values, weights = test_values
+        values, weights = instance_values
 
         problem_row = {
-            ("values", i): values,
-            ("weights",i): weights,
+            "values": values,
+            "weights": weights,
         }
 
-        filepath = Path("test_data/knapsack_new.csv")
+        knapsack_instance_name = "num_{problem}|size_{size}".format(problem=i,size=current_size)
+        filepath = Path("knapsack/instances/" + knapsack_instance_name + ".csv")
         filepath.parent.mkdir(parents=True, exist_ok=True)
         
-        row_df = pd.concat([row_df,pd.DataFrame(problem_row)],axis=1)
+        row_df = pd.DataFrame(problem_row)
 
-    row_df.to_csv(filepath, mode="w", index=False)
+        row_df.to_csv(filepath, mode="w", index_label="index")
 
 save_knapsack_instances(num_of_steps=10)

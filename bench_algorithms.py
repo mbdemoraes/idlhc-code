@@ -10,8 +10,10 @@ class Knapsack:
     def __init__(self, values, weights):
         self.values = values
         self.weights = weights
-        self.capacity = int((0.5 * self.max_weight_value) * len(self.values))
+        self.capacity = self._get_capacity()
 
+    def _get_capacity(self):
+        return math.ceil(0.5 * (sum(self.weights)))
     def get_sorted_ratio_indexes(self):
         ratios = [self.values[i] / self.weights[i] for i in range(len(self.values))]
         sorted_ratio_indexes = sorted(range(len(self.values)), key=lambda i: ratios[i])
