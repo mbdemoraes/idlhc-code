@@ -4,29 +4,86 @@ from bench_algorithms import Knapsack
 import random
 import pandas as pd
 from pathlib import Path
+from os import listdir
 import threading
-#import concurrent.futures
+from common.helper import file_name_parser
+import sys
+
+
+def save_df_to_path(path,df,prefix = None):
+    try:
+        file = pd.read_csv(path)
+    except:
+        file = pd.DataFrame()
+    
+    final_df = pd.concat(
+        [file, df], axis=1, ignore_index=True
+    )
+    if prefix is None:
+        prefix = "run_"
+    else:
+        prefix = prefix + "_"
+    final_df.add_prefix(prefix).to_csv(path, mode="w", index=False)
+    return final_df
+
+def create_directories_from_str(dir_as_str):
+    path = Path(dir_as_str)
+    path.parent.mkdir(parents=True, exist_ok=True) 
+
+def capture_test_data(iteration: IDLHC, problem: Problem, instance_num: int):
+    convergence_array = iteration.convergence_array
+    population_gen_type = problem.initial_population_type
+    best_individuals = iteration.best_individuals
+
+    folder_path = "knapsack/tests/population-gen-type_{population_gen_type}/".format(
+        population_gen_type=population_gen_type,
+    )
+
+    file_path = "knapsack-instance_{instance_num}.csv".format(
+        instance_num=instance_num, population_gen_type=population_gen_type
+    )
+    file_path = folder_path + file_path
+    
+    create_directories_from_str(file_path)
+    
+    final_test_df = save_df_to_path(path=file_path,df = pd.DataFrame(convergence_array))
+
+    best_individual_path = "best-individuals-instance_{instance_num}/run_{run}.csv".format(
+        instance_num = instance_num,
+        run=final_test_df.columns[-1]
+    )
+    best_individual_path = folder_path + best_individual_path
+    create_directories_from_str(best_individual_path)
+    
+    best_individual_df = pd.DataFrame()
+    for individual in best_individuals:
+        best_individual_df = pd.concat([best_individual_df,pd.DataFrame(individual)],axis=1,ignore_index=True)
+    save_df_to_path(path=best_individual_path, df= best_individual_df,prefix="gen")
 
 def gen_test_cases(
-    initial_population_type = 0,
+    initial_population_type=0,
     generations=100,
     num_of_individuals=100,
     direction="MAX",
     num_pdf=20,
     num_cut_pdf=0.1,
 ):
-    knapsack_tests_data = pd.read_csv("test_data/knapsack_new.csv",header=[0,1])
-    total_knapsack_instances = list(knapsack_tests_data)[-1][1]
-    
-    #for current_instance in range(int(total_knapsack_instances)+1):      
-    kkkk = [9]
-    for current_instance in kkkk:      
-        values = list(knapsack_tests_data["values"][str(current_instance)].dropna())
-        weights = list(knapsack_tests_data["weights"][str(current_instance)].dropna())
-        
+    instances_path = "knapsack/instances/"
+    tests_path = "knapsack/tests"
+    knapsack_instances = ["num_1|size_200.csv"]
+
+    for current_instance in knapsack_instances:
+        knapsack_instances_data = pd.read_csv(Path(instances_path + current_instance))
+
+        current_instance_info = file_name_parser(current_instance)
+
+        values = list(knapsack_instances_data["values"])
+        weights = list(knapsack_instances_data["weights"])
+
         knapsack = Knapsack(values, weights)
 
-        num_of_variables = len(values)
+        num_of_variables = current_instance_info["size"]
+
         problem = Problem(
             num_of_variables=num_of_variables,
             num_of_individuals=num_of_individuals,
@@ -39,53 +96,13 @@ def gen_test_cases(
             initial_population_type=initial_population_type,
         )
 
-        print(threading.current_thread().name, "Test Num: ", current_instance)
         iteration = IDLHC(problem, num_pdf=num_pdf, num_cut_pdf=num_cut_pdf)
         iteration.do()
-        capture_test_data(iteration,problem, current_instance)
         
-def capture_test_data(iteration : IDLHC, problem: Problem, problem_number : int):
-    best_value = max(iteration.convergence_array)
-    convergence_array = iteration.convergence_array
-    first_gen_with_best_value = 0
-    population_gen_type = problem.initial_population_type
-    problem_type = "knapsack"
+        capture_test_data(iteration, problem, current_instance_info["num"])
 
-    for count,value in enumerate(convergence_array):
-        if value == best_value:
-            first_gen_with_best_value = count
-            break
-
-            
-    problem_row = {
-    "best_value": best_value,
-    "firstgen_with_best_value": first_gen_with_best_value,
-    "population_gen_type": population_gen_type,
-    "problem_type": problem_type,
-    "convergence_array": "",
-    "problem_number": problem_number 
-    }
-
-    row_df = pd.DataFrame([problem_row])
-    row_df.at[0, "convergence_array"] = convergence_array
-
-    filepath = Path("algorithm_metrics/knapsack_problem_updated.csv")
-
-    filepath.parent.mkdir(parents=True, exist_ok=True)
-    
-    csv_output_lock = threading.Lock()
-    with csv_output_lock:
-        row_df.to_csv(filepath, mode="a", index=False, header=False)
-
-for i in range(5):
-    t1 = threading.Thread(target=gen_test_cases, args=(0,) )
-    t2 = threading.Thread(target=gen_test_cases, args=(1,) )
-    t3 = threading.Thread(target=gen_test_cases, args=(2,) )
-    t1.start()
-    t2.start()
-    t3.start()
-    t1.join()
-    t2.join()
-    t3.join()
-
+num_runs = int(sys.argv[1])
+gen_type = int(sys.argv[2])
+for i in range(num_runs):
+    gen_test_cases(initial_population_type=gen_type)
 print("done")

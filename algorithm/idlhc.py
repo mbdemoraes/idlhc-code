@@ -38,8 +38,9 @@ class IDLHC:
         # Cria população inicial
         self.population = self.problem.create_initial_population()
 
+        print("Progresso:")
         for i in range(self.problem.num_of_generations):
-            #print("Generation: " + str(i))
+            print(str(i)+"%",end="\r")
 
             # Conta as ocorrências das variáveis
             self.idlhc_utils.variable_count(self.population)
@@ -60,7 +61,9 @@ class IDLHC:
 
             # Adiciona no vetor de convergência o melhor indivíduo encontrado até o momento
             self.convergence_array.append(self.population.population[0].objective)
-            self.best_individuals.append(self.population.population[0])
+            self.best_individuals.append(self.population.population[0].features)
+            #if len(self.convergence_array) > 1 and self.convergence_array[-1] > self.convergence_array[-2]:
+            #    self.best_individual = self.population.population[0]
 
         # Plota o gráfico de convergência
         #self.plot_convergence()
