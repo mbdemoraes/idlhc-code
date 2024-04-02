@@ -21,7 +21,7 @@ problem = Problem(num_of_variables=num_of_variables,
                       num_of_generations=generations,
                       objective=[f1], # ATENÇÃO: aqui ele passa uma função
                       mutation=(1/num_of_variables),
-                      variables_range=[0, 1],
+                      variables_range=[0, 5],
                       direction=direction)
 
 # cria o objeto da classe IDLHC

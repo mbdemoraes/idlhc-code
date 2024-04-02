@@ -59,7 +59,7 @@ class IDLHC_UTILS:
         # cria um vetor de probabilidades de ocorrência para cada possibilidade
         new_probabilities = [[] for i in range(self.problem.num_of_variables)]
         for i in range(self.problem.num_of_variables):
-            for candidate in self.problem.variables_range:
+            for candidate in self.problem.variables:
                 freq_norm = round(population.var_count[i].count(candidate) / self.num_pdf, 2)
                 new_probabilities[i].append(freq_norm)
         population.probs = copy.deepcopy(new_probabilities)
